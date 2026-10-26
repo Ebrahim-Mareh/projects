@@ -2,80 +2,153 @@ import os
 import time
 
 
-# France flag
-
-print("\033[44m      \033[47m      \033[41m      \033[0m")
-print("\033[44m      \033[47m      \033[41m      \033[0m")
-print("\033[44m      \033[47m      \033[41m      \033[0m")
-print("\033[44m      \033[47m      \033[41m      \033[0m")
-print("\033[44m      \033[47m      \033[41m      \033[0m")
-print("\033[44m      \033[47m      \033[41m      \033[0m")
-print("\033[44m      \033[47m      \033[41m      \033[0m")
-print("\033[44m      \033[47m      \033[41m      \033[0m")
+RED = '\u001b[41m'
+BLUE = '\u001b[44m'
+WHITE = '\u001b[47m'
+BLACK = '\u001b[40m'
+END = '\u001b[0m'
 
 
-# Pattern a
-
-print()
-print("██  ██    ██  ██")
-print("  ██        ██")
-print("██  ██    ██  ██")
-
-
-# Animation
-
-time.sleep(1)
-
-os.system("cls")
-print("\033[5;5H*")
-time.sleep(0.5)
-
-os.system("cls")
-print("\033[5;10H*")
-time.sleep(0.5)
-
-os.system("cls")
-print("\033[5;15H*")
-time.sleep(0.5)
-
-os.system("cls")
-print("\033[5;20H*")
-time.sleep(0.5)
+def clear_console():
+    if os.name == 'nt':
+        os.system("cls")
+    else:
+        os.system("clear")
 
 
-# Sequence
+def flag():
+    print("\nФлаг Франции:")
 
-file = open("sequence.txt", "r")
+    width = 8
+    height = 8
 
-negative = 0
-positive = 0
-
-for number in file:
-    number = float(number)
-
-    if number < 0:
-        negative = negative + 1
-
-    if number > 0:
-        positive = positive + 1
-
-file.close()
+    for i in range(height):
+        print(
+            BLUE + " " * width +
+            WHITE + " " * width +
+            RED + " " * width +
+            END
+        )
 
 
-print()
-print("Negative:", negative)
-print("Positive:", positive)
+def pattern_a():
+    print("\nУзор a:")
+
+    drawing = [
+        [1, 0, 1],
+        [0, 1, 0],
+        [1, 0, 1]
+    ]
+
+    repeat_x = 3
+    repeat_y = 2
+
+    cell_width = 4
+    cell_height = 2
+
+    pattern_width = (
+        repeat_x * 3 + repeat_x - 1
+    ) * cell_width
+
+    for repeat_row in range(repeat_y):
+        for i in range(3):
+            line = ''
+
+            for repeat_col in range(repeat_x):
+                for j in range(3):
+                    if drawing[i][j] == 1:
+                        line += (
+                            BLACK + " " * cell_width + END
+                        )
+                    else:
+                        line += (
+                            WHITE + " " * cell_width + END
+                        )
+
+                if repeat_col < repeat_x - 1:
+                    line += (
+                        WHITE + " " * cell_width + END
+                    )
+
+            for k in range(cell_height):
+                print(line)
+
+        if repeat_row < repeat_y - 1:
+            for k in range(cell_height):
+                print(
+                    WHITE + " " * pattern_width + END
+                )
 
 
-# Percentages
+def animation():
+    for frame in range(4):
+        clear_console()
 
-total = negative + positive
+        column = frame * 4 + 1
 
-negative_percent = negative / total * 100
-positive_percent = positive / total * 100
+        print(
+            '\x1b[5;' + str(column) + 'H' +
+            WHITE + "  " + END,
+            end='',
+            flush=True
+        )
 
-print("\033[44m" + " " * int(negative / 5) + "\033[0m",
-      negative_percent, "%")
+        time.sleep(0.4)
 
-print("\033[41m" + " " * int(positive / 5) + "\033[0m",
-      positive_percent, "%")
+    clear_console()
+
+
+def sequence():
+    file = open('sequence.txt', 'r')
+
+    negative = []
+    positive = []
+
+    for line in file:
+        number = float(line)
+
+        if number < 0:
+            negative.append(number)
+
+        if number > 0:
+            positive.append(number)
+
+    file.close()
+
+    total = len(negative) + len(positive)
+
+    print("\nДиаграмма процентов:")
+
+    if total == 0:
+        print("Нет чисел меньше или больше 0.")
+    else:
+        negative_percent = len(negative) / total * 100
+        positive_percent = len(positive) / total * 100
+
+        bar_width = 30
+
+        negative_width = round(
+            negative_percent / 100 * bar_width
+        )
+
+        positive_width = round(
+            positive_percent / 100 * bar_width
+        )
+
+        print("Количество чисел меньше 0:")
+        print(
+            BLUE + " " * negative_width + END +
+            " " + str(round(negative_percent, 2)) + "%"
+        )
+
+        print("Количество чисел больше 0:")
+        print(
+            RED + " " * positive_width + END +
+            " " + str(round(positive_percent, 2)) + "%"
+        )
+
+
+animation()
+flag()
+pattern_a()
+sequence()
