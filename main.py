@@ -18,13 +18,12 @@ def flag():
     clear_console()
     print("\nFrench Flag:")
 
-    width = 8
-    height = 8
+    for i in range(8):
+        print(BLUE + " " * 8+
+              WHITE + " " * 8 +
+              RED + " " * 8+ END)
 
-    for i in range(height):
-        print(BLUE + " " * width +
-              WHITE + " " * width +
-              RED + " " * width + END)
+
 
     input("\nPress Enter to continue...")
 
@@ -39,45 +38,33 @@ def pattern_a():
         [1, 0, 1]
     ]
 
-    repeat_x = 3
-    repeat_y = 2
     cell_width = 4
     cell_height = 2
 
-    pattern_width = (repeat_x * 3 + repeat_x - 1) * cell_width
+    separator = WHITE + " " * cell_width + END
 
-    for repeat_row in range(repeat_y):
-        for i in range(3):
-            line = ''
+    for i in range(len(drawing)):
+        line = ""
 
-            for repeat_col in range(repeat_x):
-                for j in range(3):
-                    if drawing[i][j] == 1:
-                        line += BLACK + " " * cell_width + END
-                    else:
-                        line += WHITE + " " * cell_width + END
+        for j in range(len(drawing[i])):
+            if drawing[i][j] == 1:
+                line += BLACK + " " * cell_width + END
+            else:
+                line += WHITE + " " * cell_width + END
 
-                if repeat_col < repeat_x - 1:
-                    line += WHITE + " " * cell_width + END
+        # نضع نسختين بجانب بعضهما
+        line = line + separator + line
 
-            for k in range(cell_height):
-                print(line)
-
-        if repeat_row < repeat_y - 1:
-            for k in range(cell_height):
-                print(WHITE + " " * pattern_width + END)
-
+        for k in range(cell_height):
+            print(line)
     input("\nPress Enter to continue...")
 
 
 def animation():
-    for frame in range(4):
+    for column in [1, 5, 9, 13]:
         clear_console()
 
-        column = frame * 4 + 1
-
-        print('\x1b[5;' + str(column) + 'H' +
-              WHITE + "  " + END,
+        print('\x1b[5;' + str(column) + 'H' + WHITE + "  " + END,
               end='', flush=True)
 
         time.sleep(0.4)
@@ -90,49 +77,67 @@ def animation():
 def sequence():
     clear_console()
 
-    file = open('sequence.txt', 'r')
+    positive = 0
+    negative = 0
 
-    negative = []
-    positive = []
+    file = open("sequence.txt", "r")
 
     for line in file:
-        number = float(line)
-
-        if number < 0:
-            negative.append(number)
-
-        if number > 0:
-            positive.append(number)
+       
+        if float(line) > 0:
+            positive += 1
+        elif float(line) < 0:
+            negative += 1
 
     file.close()
 
-    total = len(negative) + len(positive)
+    total = positive + negative
 
-    print("\nPercentage Chart:")
+    if total != 0:
 
-    if total == 0:
-        print("There are no positive or negative numbers.")
-    else:
-        negative_percent = len(negative) / total * 100
-        positive_percent = len(positive) / total * 100
+        p = positive / total * 100
+        n = negative / total * 100 
 
-        bar_width = 30
-
-        negative_width = round(negative_percent / 100 * bar_width)
-        positive_width = round(positive_percent / 100 * bar_width)
-
-        print("\nNegative numbers:")
-        print(BLUE + " " * negative_width + END,
-              str(round(negative_percent, 2)) + "%")
+      
 
         print("\nPositive numbers:")
-        print(RED + " " * positive_width + END,
-              str(round(positive_percent, 2)) + "%")
+        print(RED + " " * round(p * 30 / 100) + END, p, "%")
+
+
+        print("\nNegative numbers:")
+        print(BLUE + " " * round(n * 30 / 100) + END, n, "%")
 
     input("\nPress Enter to finish...")
 
+def function_graph():
+    graph = "\x1b[2J\x1b[H"
 
-animation()
+    for row in range(2, 22):
+        graph += "\x1b[" + str(row) + ";2H|"
+
+    for column in range(2, 42):
+        graph += "\x1b[21;" + str(column) + "H-"
+
+    for step in range(40):
+        x = step / 6
+        y = x * x
+
+        row = 21 - round(y)
+        column = step + 2
+
+        graph += "\x1b[" + str(row) + ";" + str(column) + "H*"
+
+    graph += "\x1b[23;1H"
+    print(graph, end="")
+
+
+    input("\nPress Enter to exit...") 
+    clear_console()
+
+
+
 flag()
 pattern_a()
+animation()
 sequence()
+function_graph()
