@@ -23,8 +23,6 @@ def flag():
               WHITE + " " * 8 +
               RED + " " * 8+ END)
 
-
-
     input("\nPress Enter to continue...")
 
 
@@ -33,30 +31,31 @@ def pattern_a():
     print("\nPattern a:")
 
     drawing = [
-        [1, 0, 1],
         [0, 1, 0],
-        [1, 0, 1]
+        [1, 0, 1],
+        [0, 1, 0]
     ]
 
     cell_width = 4
     cell_height = 2
-
-    separator = WHITE + " " * cell_width + END
+    separator = WHITE + " " * 4 + END
 
     for i in range(len(drawing)):
-        line = ""
+
+        empty_cell = ""
 
         for j in range(len(drawing[i])):
-            if drawing[i][j] == 1:
-                line += BLACK + " " * cell_width + END
-            else:
-                line += WHITE + " " * cell_width + END
 
-        # نضع نسختين بجانب بعضهما
-        line = line + separator + line
+            if drawing[i][j] == 1:
+                empty_cell += WHITE + " " * cell_width + END
+            else:
+                empty_cell += BLACK + " " * cell_width + END
+
+    
+        repeated_shape = empty_cell+ separator + empty_cell
 
         for k in range(cell_height):
-            print(line)
+            print(repeated_shape)
     input("\nPress Enter to continue...")
 
 
@@ -64,12 +63,12 @@ def animation():
     for column in [1, 5, 9, 13]:
         clear_console()
 
-        print('\x1b[5;' + str(column) + 'H' + WHITE + "  " + END,
-              end='', flush=True)
+        print('\x1b[5;' + str(column) + 'H' + WHITE + "  " + END )
 
         time.sleep(0.4)
 
     clear_console()
+    
     print("Animation finished.")
     input("\nPress Enter to continue...")
 
@@ -80,16 +79,16 @@ def sequence():
     positive = 0
     negative = 0
 
-    file = open("sequence.txt", "r")
+    sequence = open("sequence.txt", "r")
 
-    for line in file:
+    for line in sequence:
        
         if float(line) > 0:
             positive += 1
         elif float(line) < 0:
             negative += 1
 
-    file.close()
+    sequence.close()
 
     total = positive + negative
 
